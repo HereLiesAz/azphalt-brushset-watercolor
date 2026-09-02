@@ -1,0 +1,31 @@
+{
+  "azphalt": "0.1",
+  "id": "com.hereliesaz.azphalt.brush-watercolor-wash-flat",
+  "name": "Wash Flat",
+  "version": "1.0.0",
+  "kind": "asset",
+  "license": "LicenseRef-Proprietary",
+  "compat": ">=0.1",
+  "description": "A broad, soft-edged wash brush with uneven, blotchy opacity. Rotate with angle.",
+  "author": "HereLiesAz",
+  "targetApps": [
+    "com.hereliesaz.graffux"
+  ],
+  "assets": [
+    {
+      "type": "brush",
+      "path": "assets/tip.png",
+      "tags": [
+        "watercolor",
+        "wash",
+        "flat"
+      ],
+      "params": {
+        "spacing": 0.12,
+        "angle": 0,
+        "roundness": 0.42,
+        "flowByPressure": false
+      }
+    }
+  ]
+}

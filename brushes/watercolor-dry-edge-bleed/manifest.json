@@ -1,0 +1,30 @@
+{
+  "azphalt": "0.1",
+  "id": "com.hereliesaz.azphalt.brush-watercolor-dry-edge-bleed",
+  "name": "Dry-Edge Bleed",
+  "version": "1.0.0",
+  "kind": "asset",
+  "license": "CC0-1.0",
+  "compat": ">=0.1",
+  "description": "A wash with a firmer core fading into wispy, irregular bleeding edges.",
+  "author": "HereLiesAz",
+  "targetApps": [
+    "com.hereliesaz.graffux"
+  ],
+  "assets": [
+    {
+      "type": "brush",
+      "path": "assets/tip.png",
+      "tags": [
+        "watercolor",
+        "dry-edge",
+        "bleed"
+      ],
+      "params": {
+        "spacing": 0.09,
+        "roundness": 1,
+        "flowByPressure": true
+      }
+    }
+  ]
+}

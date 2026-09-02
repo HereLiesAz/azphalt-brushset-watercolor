@@ -1,0 +1,12 @@
+CC0 1.0 Universal (Public Domain Dedication)
+
+The brush tip bitmap in this package (assets/tip.png) is dedicated to the public
+domain under the CC0 1.0 Universal license:
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Tip artwork by David Revoy (davidrevoy.com), from the Krita brushes 2025-01 bundle.
+Converted from the source bitmap: inverted to a grayscale-alpha PNG and packaged
+as an azphalt brush asset. No other changes were made to the artwork.
+
+The manifest, packaging code, and this LICENSE file are
+Copyright (c) 2026 HereLiesAz. All rights reserved.

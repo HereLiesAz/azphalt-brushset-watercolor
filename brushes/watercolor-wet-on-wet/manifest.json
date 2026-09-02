@@ -1,0 +1,30 @@
+{
+  "azphalt": "0.1",
+  "id": "com.hereliesaz.azphalt.brush-watercolor-wet-on-wet",
+  "name": "Wet-on-Wet",
+  "version": "1.0.0",
+  "kind": "asset",
+  "license": "CC0-1.0",
+  "compat": ">=0.1",
+  "description": "A soft, irregular bloom that mimics pigment bleeding into wet paper.",
+  "author": "HereLiesAz",
+  "targetApps": [
+    "com.hereliesaz.graffux"
+  ],
+  "assets": [
+    {
+      "type": "brush",
+      "path": "assets/tip.png",
+      "tags": [
+        "watercolor",
+        "bloom",
+        "bleed"
+      ],
+      "params": {
+        "spacing": 0.1,
+        "roundness": 1,
+        "flowByPressure": true
+      }
+    }
+  ]
+}

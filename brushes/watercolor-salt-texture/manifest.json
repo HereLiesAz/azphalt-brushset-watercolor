@@ -1,0 +1,30 @@
+{
+  "azphalt": "0.1",
+  "id": "com.hereliesaz.azphalt.brush-watercolor-salt-texture",
+  "name": "Salt Texture",
+  "version": "1.0.0",
+  "kind": "asset",
+  "license": "CC0-1.0",
+  "compat": ">=0.1",
+  "description": "A granular wash with salt-crystal speckling, pulling pigment into starbursts.",
+  "author": "HereLiesAz",
+  "targetApps": [
+    "com.hereliesaz.graffux"
+  ],
+  "assets": [
+    {
+      "type": "brush",
+      "path": "assets/tip.png",
+      "tags": [
+        "watercolor",
+        "salt",
+        "texture"
+      ],
+      "params": {
+        "spacing": 0.1,
+        "roundness": 1,
+        "flowByPressure": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@azphalt/azphalt-brush-watercolor",
+  "version": "1.0.0",
+  "description": "4 azphalt brush packages: Wet-on-Wet, Wash Flat, Salt Texture, Dry-Edge Bleed.",
+  "private": false,
+  "scripts": {
+    "build": "node build.js"
+  }
+}
