@@ -1,40 +1,26 @@
-name: sign-azp
-# After a release is published, sign its .azp assets with the publisher key and re-upload them.
-# Auto-signs every future release; dispatch it to sign an existing one. Never touches the repo build.
+# centralized-by: HereLiesAz/workflows
+# central-source-path: .github/workflows/sign-azp.yml
+# central-source-sha256: 39ea6636c4df27ad72afc857325be6c5850c014589e7542ab529bda5e644b565
+# This file intentionally contains no repository secrets.
+name: sign-azp [central proxy]
 on:
   release:
     types: [published, released]
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
+  id-token: write
 jobs:
-  sign:
+  central-dispatch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - name: Sign released .azp assets
+      - name: Dispatch to HereLiesAz/workflows
         env:
-          AZP_PRIVATE_KEY: ${{ secrets.AZP_PRIVATE_KEY }}
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.event.release.tag_name }}
-        run: |
-          if [ -z "$AZP_PRIVATE_KEY" ]; then echo "AZP_PRIVATE_KEY not set - skipping"; exit 0; fi
-          TAG="${TAG:-$(gh release view -R "$GITHUB_REPOSITORY" --json tagName -q .tagName 2>/dev/null)}"
-          if [ -z "$TAG" ]; then echo "no release to sign"; exit 0; fi
-          npm install --no-audit --no-fund @azphalt/azp
-          mkdir sign && cd sign
-          if ! gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p '*.azp'; then echo "no .azp assets"; exit 0; fi
-          node -e '
-            const fs = require("fs");
-            const { signAzp } = require("@azphalt/azp");
-            const pk = process.env.AZP_PRIVATE_KEY;
-            let n = 0;
-            for (const f of fs.readdirSync(".").filter((x) => x.endsWith(".azp"))) {
-              fs.writeFileSync(f, signAzp(fs.readFileSync(f), { privateKey: pk }));
-              console.log("signed " + f);
-              n++;
-            }
-            if (!n) console.log("no .azp files downloaded");
-          '
-          gh release upload "$TAG" *.azp --clobber -R "$GITHUB_REPOSITORY" || true
+          WORKFLOWS_GATEWAY_URL: ${{ vars.WORKFLOWS_GATEWAY_URL }}
+          EVENT_JSON: ${{ toJSON(github.event) }}
+          INPUTS_JSON: ${{ toJSON(inputs) }}
+          VARS_JSON: ${{ toJSON(vars) }}
+          SOURCE_WORKFLOW_PATH: .github/workflows/sign-azp.yml
+          SOURCE_SHA256: 39ea6636c4df27ad72afc857325be6c5850c014589e7542ab529bda5e644b565
+        shell: bash
+        run: "set -euo pipefail\n[[ -n \"${WORKFLOWS_GATEWAY_URL:-}\" ]] || { echo \"Repository variable WORKFLOWS_GATEWAY_URL is not configured.\" >&2; exit 1; }\noidc_response=\"$(curl --fail-with-body --silent --show-error -H \"Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}\" \"${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=hereliesaz-workflows\")\"\noidc_token=\"$(jq -r '.value // empty' <<<\"$oidc_response\")\"\n[[ -n \"$oidc_token\" ]] || { echo \"GitHub did not issue an OIDC token.\" >&2; exit 1; }\necho \"::add-mask::$oidc_token\"\npayload=\"$(jq -n   --arg repository \"$GITHUB_REPOSITORY\" --arg repository_id \"$GITHUB_REPOSITORY_ID\"   --arg repository_owner \"$GITHUB_REPOSITORY_OWNER\" --arg repository_owner_id \"$GITHUB_REPOSITORY_OWNER_ID\"   --arg sha \"$GITHUB_SHA\" --arg ref \"$GITHUB_REF\" --arg ref_name \"$GITHUB_REF_NAME\" --arg ref_type \"$GITHUB_REF_TYPE\"   --arg head_ref \"$GITHUB_HEAD_REF\" --arg base_ref \"$GITHUB_BASE_REF\" --arg actor \"$GITHUB_ACTOR\" --arg actor_id \"$GITHUB_ACTOR_ID\"   --arg event_name \"$GITHUB_EVENT_NAME\" --arg run_id \"$GITHUB_RUN_ID\" --arg run_number \"$GITHUB_RUN_NUMBER\" --arg run_attempt \"$GITHUB_RUN_ATTEMPT\"   --arg workflow_ref \"$GITHUB_WORKFLOW_REF\" --arg workflow_name \"$GITHUB_WORKFLOW\" --arg source_workflow_path \"$SOURCE_WORKFLOW_PATH\"   --arg source_sha256 \"$SOURCE_SHA256\" --argjson event \"$EVENT_JSON\" --argjson inputs \"$INPUTS_JSON\" --argjson vars \"$VARS_JSON\"   '{repository:$repository,repository_id:$repository_id,repository_owner:$repository_owner,repository_owner_id:$repository_owner_id,sha:$sha,check_sha:($event.pull_request.head.sha // $sha),ref:$ref,ref_name:$ref_name,ref_type:$ref_type,head_ref:$head_ref,base_ref:$base_ref,actor:$actor,actor_id:$actor_id,event_name:$event_name,event:$event,inputs:$inputs,vars:$vars,run_id:$run_id,run_number:$run_number,run_attempt:$run_attempt,workflow_ref:$workflow_ref,workflow_name:$workflow_name,source_workflow_path:$source_workflow_path,source_sha256:$source_sha256}')\"\ncurl --fail-with-body --silent --show-error -X POST \"${WORKFLOWS_GATEWAY_URL%/}/dispatch\" -H \"Authorization: Bearer ${oidc_token}\" -H \"Content-Type: application/json\" --data-binary \"$payload\""
